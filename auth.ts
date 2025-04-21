@@ -29,7 +29,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({token, account, profile}) {
       if(account && profile) {
         const user = await client.withConfig({useCdn: false}).fetch(AUTHOR_BY_GITHUB_ID_QUERY, {id: profile?.id});
-        token.id = user?.id;
+        token.id = user?._id;
       }
       return token;
     },

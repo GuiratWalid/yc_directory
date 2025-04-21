@@ -10,6 +10,7 @@ import { formSchema } from "@/lib/validation";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { createPitch } from "@/lib/actions";
 
 const StartupForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -29,10 +30,9 @@ const StartupForm = () => {
 
       await formSchema.parseAsync(formValues);
 
-      //const result = await createIdea(prevState, formData, pitch);
-      // console.log(result)
-
-      /*if(result.status == 'SUCCESS') {
+      const result = await createPitch(prevState, formData, pitch);
+      
+      if(result.status == 'SUCCESS') {
         toast({
           title: "Success",
           description: "Your startup pitch has been created successfully",
@@ -41,9 +41,10 @@ const StartupForm = () => {
         router.push(`/startup/${result.id}`);
       }
 
-      return result;*/
+      return result;
     } catch(error) {
       if(error instanceof z.ZodError) {
+        
         const fieldErrors = error.flatten().fieldErrors;
 
         setErrors(fieldErrors as unknown as Record<string, string>);
@@ -72,7 +73,7 @@ const StartupForm = () => {
   return <form action={formAction} className="startup-form">
     <div>
       <label htmlFor="title" className="startup-form_label">Title</label>
-      <Input id="title" name="title" className="startup-form_input" required placeholder="Startup Title"/>
+      <Input type="text" id="title" name="title" className="startup-form_input" required placeholder="Startup Title"/>
       {errors.title && <p className="startup-form_error">{errors.title}</p>}
     </div>
 
@@ -84,13 +85,13 @@ const StartupForm = () => {
 
     <div>
       <label htmlFor="category" className="startup-form_label">Category</label>
-      <Input id="category" name="category" className="startup-form_input" required placeholder="Startup Category (Tech, Health, Education ...)"/>
+      <Input type="text" id="category" name="category" className="startup-form_input" required placeholder="Startup Category (Tech, Health, Education ...)"/>
       {errors.category && <p className="startup-form_error">{errors.category}</p>}
     </div>
 
     <div>
       <label htmlFor="link" className="startup-form_label">Image URL</label>
-      <Input id="link" name="link" className="startup-form_input" required placeholder="Startup Image URL"/>
+      <Input type="url" id="link" name="link" className="startup-form_input" required placeholder="Startup Image URL"/>
       {errors.link && <p className="startup-form_error">{errors.link}</p>}
     </div>
     
